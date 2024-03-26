@@ -1,0 +1,61 @@
+---
+- name: Create org and repos
+  gather_facts: no
+  hosts: localhost
+  vars:
+    ansible_remote_tmp: /runner/.ansible/tmp
+
+    quay_route: http://registry-quay-app
+
+    quay_user_password: openshift
+
+  tasks:
+    - name: Create users
+      herve4m.quay.quay_user:
+        username: "user{{ item }}"
+        email: "user{{ item }}@example.com"
+        password: "{{ quay_user_password }}"
+        quay_host: "{{ quay_route }}"
+        quay_token: "{{ access_token }}"
+        state: present
+      with_sequence: 0-{{ users }}
+
+    - name: create organizations
+      herve4m.quay.quay_organization:
+        name: "user{{ item }}"
+        email: "user{{ item }}@workshop-noreply.com"
+        time_machine_expiration: "14d"
+        state: present
+        quay_host: "{{ quay_route }}"
+        quay_token: "{{ access_token }}"
+      with_items: 0-{{ users }}
+
+    - name: Create teams
+      herve4m.quay.quay_team:
+        name: "user{{ item }}"
+        organization: "user{{ item }}"
+        description: "user{{ item }} team"
+        role: "creator"
+        members:
+          - user{{ item }}
+        append: false
+        state: present
+        quay_host: "{{ quay_route }}"
+        quay_token: "{{ access_token }}"
+      with_items: 0-{{ users }}
+
+    # Update later once we figure out what image repos are needed
+    - name: create test repositories
+      herve4m.quay.quay_repository:
+        name: "user{{ item }}/test"
+        visibility: private
+        description: "Test Repository"
+        perms:
+          - name: user{{ item }}
+            type: team
+            role: admin
+        state: present
+        quay_host: "{{ quay_route }}"
+        quay_token: "{{ access_token }}"
+        visibility: "public"
+      with_items: 0-{{ users }}
