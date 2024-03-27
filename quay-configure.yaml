@@ -10,10 +10,19 @@
     quay_user_password: openshift
 
   tasks:
+    - name: Create clusteradmin user
+      herve4m.quay.quay_user:
+        username: "clusteradmin"
+        email: "clusteradmin@workshop-noreply.com"
+        password: "{{ quay_user_password }}"
+        quay_host: "{{ quay_route }}"
+        quay_token: "{{ access_token }}"
+        state: present
+
     - name: Create users
       herve4m.quay.quay_user:
         username: "user{{ item }}"
-        email: "user{{ item }}@example.com"
+        email: "user{{ item }}@workshop-noreply.com"
         password: "{{ quay_user_password }}"
         quay_host: "{{ quay_route }}"
         quay_token: "{{ access_token }}"
