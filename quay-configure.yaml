@@ -1,6 +1,7 @@
 ---
 - name: Create org and repos
   gather_facts: no
+  ignore_errors: yes
   hosts: localhost
   vars:
     ansible_remote_tmp: /runner/.ansible/tmp
@@ -10,20 +11,11 @@
     quay_user_password: openshift
 
   tasks:
-    # - name: Create clusteradmin user
-    #   herve4m.quay.quay_user:
-    #     username: "clusteradmin"
-    #     email: "clusteradmin@workshop-noreply.com"
-    #     password: "{{ quay_user_password }}"
-    #     quay_host: "{{ quay_route }}"
-    #     quay_token: "{{ access_token }}"
-    #     state: present
 
     - name: Create users
       herve4m.quay.quay_user:
         username: "user{{ item }}"
         email: "user{{ item }}@workshop-noreply.com"
-        password: "{{ quay_user_password }}"
         quay_host: "{{ quay_route }}"
         quay_token: "{{ access_token }}"
         state: present
@@ -68,3 +60,7 @@
         quay_token: "{{ access_token }}"
         visibility: "public"
       with_sequence: 0-{{ users }}
+
+    - name: Set flag
+      set_fact: flag = failed
+      when: "'FAILED' in command_result.stderr"
