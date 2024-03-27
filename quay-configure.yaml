@@ -19,47 +19,47 @@
         quay_host: "{{ quay_route }}"
         quay_token: "{{ access_token }}"
         state: present
-      with_sequence: 0-{{ users }}
+      with_sequence: 1-{{ users }}
 
-    # - name: create organizations
-    #   herve4m.quay.quay_organization:
-    #     name: "organization{{ item }}"
-    #     email: "organization{{ item }}@workshop-noreply.com"
-    #     time_machine_expiration: "14d"
-    #     state: present
-    #     quay_host: "{{ quay_route }}"
-    #     quay_token: "{{ access_token }}"
-    #   with_sequence: 0-{{ users }}
+    - name: create organizations
+      herve4m.quay.quay_organization:
+        name: "workshop{{ item }}"
+        email: "workshop{{ item }}@workshop-noreply.com"
+        time_machine_expiration: "14d"
+        state: present
+        quay_host: "{{ quay_route }}"
+        quay_token: "{{ access_token }}"
+      with_sequence: 1-{{ users }}
 
-    # - name: Create teams
-    #   herve4m.quay.quay_team:
-    #     name: "team{{ item }}"
-    #     organization: "org-user{{ item }}"
-    #     description: "user{{ item }} team"
-    #     role: "creator"
-    #     members:
-    #       - user{{ item }}
-    #     append: false
-    #     state: present
-    #     quay_host: "{{ quay_route }}"
-    #     quay_token: "{{ access_token }}"
-    #   with_sequence: 0-{{ users }}
+    - name: Create teams
+      herve4m.quay.quay_team:
+        name: "team{{ item }}"
+        organization: "workshop{{ item }}"
+        description: "user{{ item }} team"
+        role: "creator"
+        members:
+          - user{{ item }}
+        append: false
+        state: present
+        quay_host: "{{ quay_route }}"
+        quay_token: "{{ access_token }}"
+      with_sequence: 1-{{ users }}
 
     # Update later once we figure out what image repos are needed
     - name: create test repositories
       herve4m.quay.quay_repository:
-        name: "user{{ item }}/test"
+        name: "workshop{{ item }}/test"
         visibility: private
         description: "Test Repository"
         perms:
-          - name: user{{ item }}
-            type: user
+          - name: team{{ item }}
+            type: team
             role: admin
         state: present
         quay_host: "{{ quay_route }}"
         quay_token: "{{ access_token }}"
         visibility: "public"
-      with_sequence: 0-{{ users }}
+      with_sequence: 1-{{ users }}
 
     - name: Set flag
       set_fact: flag = failed
