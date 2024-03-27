@@ -23,7 +23,7 @@
 
     - name: create organizations
       herve4m.quay.quay_organization:
-        name: "user{{ item }}"
+        name: "org-user{{ item }}"
         email: "user{{ item }}@workshop-noreply.com"
         time_machine_expiration: "14d"
         state: present
@@ -33,8 +33,8 @@
 
     - name: Create teams
       herve4m.quay.quay_team:
-        name: "user{{ item }}"
-        organization: "user{{ item }}"
+        name: "team-user{{ item }}"
+        organization: "org-user{{ item }}"
         description: "user{{ item }} team"
         role: "creator"
         members:
