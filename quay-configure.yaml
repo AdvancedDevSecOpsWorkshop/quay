@@ -48,7 +48,7 @@
     # Update later once we figure out what image repos are needed
     - name: create test repositories
       herve4m.quay.quay_repository:
-        name: "user{{ item }}/test"
+        name: "org-user{{ item }}/test"
         visibility: private
         description: "Test Repository"
         perms:
