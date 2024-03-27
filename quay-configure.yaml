@@ -21,34 +21,34 @@
         state: present
       with_sequence: 0-{{ users }}
 
-    - name: create organizations
-      herve4m.quay.quay_organization:
-        name: "org-user{{ item }}"
-        email: "org-user{{ item }}@workshop-noreply.com"
-        time_machine_expiration: "14d"
-        state: present
-        quay_host: "{{ quay_route }}"
-        quay_token: "{{ access_token }}"
-      with_sequence: 0-{{ users }}
+    # - name: create organizations
+    #   herve4m.quay.quay_organization:
+    #     name: "organization{{ item }}"
+    #     email: "organization{{ item }}@workshop-noreply.com"
+    #     time_machine_expiration: "14d"
+    #     state: present
+    #     quay_host: "{{ quay_route }}"
+    #     quay_token: "{{ access_token }}"
+    #   with_sequence: 0-{{ users }}
 
-    - name: Create teams
-      herve4m.quay.quay_team:
-        name: "team-user{{ item }}"
-        organization: "org-user{{ item }}"
-        description: "user{{ item }} team"
-        role: "creator"
-        members:
-          - user{{ item }}
-        append: false
-        state: present
-        quay_host: "{{ quay_route }}"
-        quay_token: "{{ access_token }}"
-      with_sequence: 0-{{ users }}
+    # - name: Create teams
+    #   herve4m.quay.quay_team:
+    #     name: "team{{ item }}"
+    #     organization: "org-user{{ item }}"
+    #     description: "user{{ item }} team"
+    #     role: "creator"
+    #     members:
+    #       - user{{ item }}
+    #     append: false
+    #     state: present
+    #     quay_host: "{{ quay_route }}"
+    #     quay_token: "{{ access_token }}"
+    #   with_sequence: 0-{{ users }}
 
     # Update later once we figure out what image repos are needed
     - name: create test repositories
       herve4m.quay.quay_repository:
-        name: "org-user{{ item }}/test"
+        name: "user{{ item }}/test"
         visibility: private
         description: "Test Repository"
         perms:
