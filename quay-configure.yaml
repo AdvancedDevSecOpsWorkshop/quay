@@ -24,7 +24,7 @@
     - name: create organizations
       herve4m.quay.quay_organization:
         name: "org-user{{ item }}"
-        email: "user{{ item }}@workshop-noreply.com"
+        email: "org-user{{ item }}@workshop-noreply.com"
         time_machine_expiration: "14d"
         state: present
         quay_host: "{{ quay_route }}"
