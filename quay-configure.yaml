@@ -37,7 +37,7 @@
         state: present
         quay_host: "{{ quay_route }}"
         quay_token: "{{ access_token }}"
-      with_items: 0-{{ users }}
+      with_sequence: 0-{{ users }}
 
     - name: Create teams
       herve4m.quay.quay_team:
@@ -51,7 +51,7 @@
         state: present
         quay_host: "{{ quay_route }}"
         quay_token: "{{ access_token }}"
-      with_items: 0-{{ users }}
+      with_sequence: 0-{{ users }}
 
     # Update later once we figure out what image repos are needed
     - name: create test repositories
@@ -67,4 +67,4 @@
         quay_host: "{{ quay_route }}"
         quay_token: "{{ access_token }}"
         visibility: "public"
-      with_items: 0-{{ users }}
+      with_sequence: 0-{{ users }}
