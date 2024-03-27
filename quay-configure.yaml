@@ -53,7 +53,7 @@
         description: "Test Repository"
         perms:
           - name: user{{ item }}
-            type: team
+            type: user
             role: admin
         state: present
         quay_host: "{{ quay_route }}"
