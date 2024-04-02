@@ -47,7 +47,6 @@
     - name: create test repositories
       herve4m.quay.quay_repository:
         name: "workshop{{ item }}/test"
-        visibility: private
         description: "Test Repository"
         perms:
           - name: team{{ item }}
