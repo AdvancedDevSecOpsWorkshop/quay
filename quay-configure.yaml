@@ -12,16 +12,16 @@
 
   tasks:
 
-    - name: Create users
-      herve4m.quay.quay_user:
-        username: "user{{ item }}"
-        email: "user{{ item }}@workshop-noreply.com"
-        quay_host: "{{ quay_route }}"
-        quay_token: "{{ access_token }}"
-        state: present
-      with_sequence: 1-{{ users }}
+    # - name: Create users
+    #   herve4m.quay.quay_user:
+    #     username: "user{{ item }}"
+    #     email: "user{{ item }}@workshop-noreply.com"
+    #     quay_host: "{{ quay_route }}"
+    #     quay_token: "{{ access_token }}"
+    #     state: present
+    #   with_sequence: 1-{{ users }}
 
-    - name: create organizations
+    - name: create organization
       herve4m.quay.quay_organization:
         name: "workshop{{ item }}"
         email: "workshop{{ item }}@workshop-noreply.com"
@@ -37,8 +37,6 @@
         organization: "workshop{{ item }}"
         description: "user{{ item }} team"
         role: "creator"
-        members:
-          - user{{ item }}
         append: false
         state: present
         quay_host: "{{ quay_route }}"
