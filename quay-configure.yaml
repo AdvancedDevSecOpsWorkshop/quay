@@ -4,8 +4,8 @@
   ignore_errors: yes
   hosts: localhost
   vars:
-    # ansible_remote_tmp: /runner/.ansible/tmp
-    ansible_remote_tmp: /tmp
+    ansible_remote_tmp: /runner/.ansible/tmp
+    quay_namespace: quay-operator
     quay_route: http://registry-quay-app
     quay_user_password: openshift
   tasks:
