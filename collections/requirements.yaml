@@ -1,3 +1,4 @@
 ---
 collections:
   - name: herve4m.quay
+  - name: community.general
