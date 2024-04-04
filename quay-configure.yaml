@@ -4,22 +4,11 @@
   ignore_errors: yes
   hosts: localhost
   vars:
-    ansible_remote_tmp: /runner/.ansible/tmp
-
+    # ansible_remote_tmp: /runner/.ansible/tmp
+    ansible_remote_tmp: /tmp
     quay_route: http://registry-quay-app
-
     quay_user_password: openshift
-
   tasks:
-
-    # - name: Create users
-    #   herve4m.quay.quay_user:
-    #     username: "user{{ item }}"
-    #     email: "user{{ item }}@workshop-noreply.com"
-    #     quay_host: "{{ quay_route }}"
-    #     quay_token: "{{ access_token }}"
-    #     state: present
-    #   with_sequence: 1-{{ users }}
 
     - name: create organization
       herve4m.quay.quay_organization:
@@ -57,6 +46,39 @@
         quay_token: "{{ access_token }}"
         visibility: "public"
       with_sequence: 1-{{ users }}
+
+    - name: get Config Bundle data
+      kubernetes.core.k8s_info:
+        group: ""
+        api_version: v1
+        kind: Secret
+        name: config-bundle-secret
+        namespace: "{{ quay_namespace }}"
+      register: config_bundle
+
+    - name: Fetch config_bundle secret
+      set_fact:
+        config_bundle_secret: "{{ query('kubernetes.core.k8s', kind='Secret', namespace='quay-operator', resource_name='config-bundle-secret') }}"
+
+    - name: Get config_bundle data
+      set_fact:
+        config_bundle: "{{ config_bundle_secret | json_query('[0].data.\"config.yaml\"') | b64decode }}"
+
+    - debug:
+        msg: "{{ config_bundle }}"
+
+    - name: Update bundle with AUTHENTICATION_TYPE
+      k8s:
+        state: present
+        definition:
+          apiVersion: v1
+          kind: Secret
+          metadata:
+            name: config-bundle-secret
+            namespace: "{{ quay_namespace }}"
+          data:
+            config.yaml: "{{ ('AUTHENTICATION_TYPE: OIDC\n' ~ config_bundle) | b64encode }}"
+          type: Opaque
 
     - name: Set flag
       set_fact: flag = failed
