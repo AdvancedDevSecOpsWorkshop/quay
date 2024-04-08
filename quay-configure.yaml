@@ -47,6 +47,34 @@
         visibility: "public"
       with_sequence: 1-{{ users }}
 
+    # Enable OIDC Team synchronization for all teams
+    - name: enable OIDC team synchronization
+      herve4m.quay.quay_team_oidc:
+        name: team{{ item }}
+        organization: workshop{{ item }}
+        sync: true
+        group_name: team{{ item }}
+        quay_host: "{{ quay_route }}"
+        quay_token: "{{ access_token }}"
+      with_sequence: 1-{{ users }}
+
+    # Generate token to pull images, note this generates
+    # a shared token that will work across all repos since
+    # it is tied to the superuser. It's not possible to
+    # automate this on a per user basis with OIDC since
+    # the users don't exist until they login
+    - name: Ensure the token exists for my account
+      herve4m.quay.quay_docker_token:
+        name: token_for_pull
+        state: present
+        token_code: c82ad1b6-4a41-4ad9-893e-c56791430fc9
+        quay_host: "{{ quay_route }}"
+        quay_token: "{{ access_token }}"
+      register: token_details
+
+    - debug:
+        msg: Docker token is {token_details}
+
     # - name: get Config Bundle data
     #   kubernetes.core.k8s_info:
     #     api_version: v1
