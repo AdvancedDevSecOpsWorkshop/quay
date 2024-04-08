@@ -1,7 +1,10 @@
 # Generate robot accounts
+- debug:
+    msg: "***** Creating robot token secret for user {{ user }} *****"
+
 - name: Check if secret already exists
   set_fact:
-    quay_secret: "{{ query('kubernetes.core.k8s', kind='Secret', namespace='user' + user, resource_name='quay') }}"
+    quay_secret: "{{ query('kubernetes.core.k8s', kind='Secret', namespace='user' ~ user, resource_name='quay') }}"
 
 - name: Create robot account
   herve4m.quay.quay_robot:
@@ -15,7 +18,7 @@
 
 - name: Create auth
   set_fact:
-    auth: "{{ 'user' + user + ':' + robot_details.token | b4encode }}"
+    auth: "{{ 'user' ~ user ~ ':' ~ robot_details.token | b64encode }}"
   when: quay_secret is undefined
 
 - name: Create dockerconfig
