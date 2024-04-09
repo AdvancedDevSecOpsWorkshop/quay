@@ -17,7 +17,7 @@
   when: quay_secret is undefined
 
 - name: Create pull secret
-  shell: oc create secret -n {{ user }}-cicd docker-registry quay --docker-server=registry-quay-quay-operator.{{ sub_domain }} --docker-username={{ user }} --docker-password={{ robot_details.token }}
+  shell: oc create secret -n user{{ user }}-cicd docker-registry quay --docker-server=registry-quay-quay-operator.{{ sub_domain }} --docker-username=user{{ user }} --docker-password={{ robot_details.token }}
 
 # - name: Create auth
 #   set_fact:
