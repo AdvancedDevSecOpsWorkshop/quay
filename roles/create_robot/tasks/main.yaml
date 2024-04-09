@@ -23,7 +23,7 @@
 
 - name: Create dockerconfig
   set_fact:
-    dockerconfigjson: "{{ lookup('template', '.dockerconfigjson.j2') }}"
+    dockerconfigjson: "{{ lookup('template', '.dockerconfigjson.j2') | to_json }}"
   when: quay_secret is undefined
 
 - name: Dockercfgjson value
