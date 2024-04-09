@@ -23,7 +23,8 @@
 
 - name: Create dockerconfig
   set_fact:
-    dockerconfigjson: "{{ lookup('template', '.dockerconfigjson.j2') }}"
+    # dockerconfigjson: "{{ \\{~lookup('template', '.dockerconfigjson.j2')~\\} }}"
+    dockerconfigjson: '{"auths": {"registry-quay-quay-operator.{{ sub_domain }}": {"auth": "{{ auth }}"}}}'
   when: quay_secret is undefined
 
 - name: Dockercfgjson value
