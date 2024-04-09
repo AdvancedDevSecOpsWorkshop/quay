@@ -23,7 +23,7 @@
 
 - name: Create dockerconfig
   set_fact:
-    dockerconfigjson: "{{ lookup('template', '.dockerconfigjson.j2') | to_json | regex_replace('[\\r\\n\\t]+','')  }}"
+    dockerconfigjson: "{{ lookup('template', '.dockerconfigjson.j2') }}"
   when: quay_secret is undefined
 
 - name: Dockercfgjson value
