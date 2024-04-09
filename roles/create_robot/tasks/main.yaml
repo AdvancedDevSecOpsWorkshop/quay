@@ -18,7 +18,7 @@
 
 - name: Create auth
   set_fact:
-    auth: "{{ 'user' ~ user ~ ':' ~ robot_details.token | b64encode }}"
+    auth: "{{ ('user' ~ user ~ ':' ~ robot_details.token) | b64encode }}"
   when: quay_secret is undefined
 
 - name: Create dockerconfig
