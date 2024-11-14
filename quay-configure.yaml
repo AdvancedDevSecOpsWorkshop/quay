@@ -32,15 +32,25 @@
         quay_token: "{{ access_token }}"
       with_sequence: 1-{{ users }}
 
+    - name: Generate robot accounts and create secrets
+      include_role:
+        name: create_robot
+      vars:
+        user: "{{ item }}"
+      with_sequence: 1-{{ users }}
+
     # Update later once we figure out what image repos are needed
     - name: create test repositories
       herve4m.quay.quay_repository:
-        name: "workshop{{ item }}/test"
+        name: "workshop{{ item }}/globex-ui"
         description: "Test Repository"
         perms:
           - name: team{{ item }}
             type: team
             role: admin
+          - name: workshop{{item}}+pipeline
+            type: user
+            role: write
         state: present
         quay_host: "{{ quay_route }}"
         quay_token: "{{ access_token }}"
@@ -56,13 +66,6 @@
         group_name: team{{ item }}
         quay_host: "{{ quay_route }}"
         quay_token: "{{ access_token }}"
-      with_sequence: 1-{{ users }}
-
-    - name: Generate robot accounts and create secrets
-      include_role:
-        name: create_robot
-      vars:
-        user: "{{ item }}"
       with_sequence: 1-{{ users }}
 
     # - name: get Config Bundle data
